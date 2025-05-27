@@ -1,0 +1,36 @@
+<div class="relative overflow-x-auto">
+    <table class="w-full text-sm text-center text-gray-200">
+        <thead class="text-xs text-gray-200 uppercase bg-gray-500">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Name
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Class
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Enrollment No
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody *ngFor="let item of studentDetails; let i = index">
+                <tr *ngIf="item.name !== ''" class="bg-slate-800 border-b border-gray-950">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-200 whitespace-nowrap">
+                        {{item.name}}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{item.sem_class}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{item.er_no}}
+                    </td>
+                    <td class="px-6 py-4 text-red-500" (click)="handleDelete(i)">
+                        Delete
+                    </td>
+                </tr>
+        </tbody>
+    </table>
+</div>
