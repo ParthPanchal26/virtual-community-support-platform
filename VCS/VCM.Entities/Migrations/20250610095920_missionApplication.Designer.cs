@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VCS.Entities.Context;
@@ -11,9 +12,11 @@ using VCS.Entities.Context;
 namespace VCS.Entities.Migrations
 {
     [DbContext(typeof(VCSDbContext))]
-    partial class VCSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250610095920_missionApplication")]
+    partial class missionApplication
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -392,119 +395,6 @@ namespace VCS.Entities.Migrations
                         });
                 });
 
-            modelBuilder.Entity("VCS.Entities.UserSkills", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Skill")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserSkills");
-                });
-
-            modelBuilder.Entity("VCS.Entity.Entities.UserDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Availability")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("CityId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CountryId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("EmployeeId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("LinkedInUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Manager")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("MyProfile")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("MySkills")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserImage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("WhyIVolunteer")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserDetail");
-                });
-
             modelBuilder.Entity("VCS.Entities.MissionApplication", b =>
                 {
                     b.HasOne("VCS.Entities.Missions", "Mission")
@@ -549,17 +439,6 @@ namespace VCS.Entities.Migrations
                     b.Navigation("Country");
 
                     b.Navigation("MissionTheme");
-                });
-
-            modelBuilder.Entity("VCS.Entity.Entities.UserDetail", b =>
-                {
-                    b.HasOne("VCS.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("VCS.Entities.City", b =>

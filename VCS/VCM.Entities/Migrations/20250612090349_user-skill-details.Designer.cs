@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VCS.Entities.Context;
@@ -11,9 +12,11 @@ using VCS.Entities.Context;
 namespace VCS.Entities.Migrations
 {
     [DbContext(typeof(VCSDbContext))]
-    partial class VCSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250612090349_user-skill-details")]
+    partial class userskilldetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

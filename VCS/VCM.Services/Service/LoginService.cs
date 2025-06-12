@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VCS.Entities.Entities;
+﻿using VCS.Entities;
 using VCS.Entities.Models;
-using VCS.Repositories.Helper;
 using VCS.Repositories.IRepositories;
-using VCS.Services.IService;
+using VCS.Services.IServices;
+using System;
+using VCS.Repositories.Helper;
 
-namespace VCS.Services.Service {
+namespace VCS.Services {
     public class LoginService(ILoginRepository loginRepository, JwtService jwtService) : ILoginService {
         private readonly ILoginRepository _loginRepository = loginRepository;
         private readonly JwtService _jwtService = jwtService;
@@ -33,10 +29,17 @@ namespace VCS.Services.Service {
             return _loginRepository.LoginUser(model);
         }
 
-        public Task<string> Register(RegisterUserModel model) {
-            return _loginRepository.Register(model);
+        public async Task<string> RegisterUser(RegisterUserRequestModel registerUserRequest) {
+            return await _loginRepository.RegisterUser(registerUserRequest);
         }
 
+        public UserResponseModel LoginUserDetailById(int id) {
+            return _loginRepository.LoginUserDetailById(id);
+        }
+
+        public async Task<bool> LoginUserProfileUpdate(AddUserDetailsRequestModel requestModel) {
+            return await _loginRepository.LoginUserProfileUpdate(requestModel);
+        }
 
     }
 }

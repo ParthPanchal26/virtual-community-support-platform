@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VCS.Entities;
 using VCS.Entities.Context;
-using VCS.Entities.Entities;
 using VCS.Entities.Models;
+using VCS.Entity.Entities;
 using VCS.Repositories.IRepositories;
 
-namespace VCS.Repositories.Repositories {
+namespace VCS.Repositories {
     public class LoginRepository(VCSDbContext cIDbContext) : ILoginRepository {
         private readonly VCSDbContext _cIDbContext = cIDbContext;
 
@@ -35,27 +37,108 @@ namespace VCS.Repositories.Repositories {
             };
         }
 
-        public async Task<string> Register(RegisterUserModel model) {
-            var isExist = _cIDbContext.User.Where(x => x.EmailAddress == model.EmailAddress && !x.IsDeleted).FirstOrDefault();
 
-            if (isExist != null) throw new Exception("Email already exist");
+        public async Task<string> RegisterUser(RegisterUserRequestModel registerUserRequest) {
+            var isEmailExist = await _cIDbContext.User.FirstOrDefaultAsync(u => u.EmailAddress.ToLower() == registerUserRequest.EmailAddress.ToLower());
+
+            if (isEmailExist != null) throw new Exception("User already exist");
 
             User user = new User() {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                EmailAddress = model.EmailAddress,
-                Password = model.Password,
-                PhoneNumber = model.PhoneNumber,
-                UserType = "user",
-                IsDeleted = false,
+                FirstName = registerUserRequest.FirstName,
+                LastName = registerUserRequest.LastName,
+                EmailAddress = registerUserRequest.EmailAddress,
+                Password = registerUserRequest.Password,
+                PhoneNumber = registerUserRequest.PhoneNumber,
+                UserType = registerUserRequest.UserType,
                 CreatedDate = DateTime.UtcNow,
-                UserImage = string.IsNullOrWhiteSpace(model.UserImage) ? "" : model.UserImage
             };
 
             await _cIDbContext.User.AddAsync(user);
-            _cIDbContext.SaveChanges();
-            return "User Added!";
+            await _cIDbContext.SaveChangesAsync();
+            return "User registered!";
+        }
+        public UserResponseModel LoginUserDetailById(int id) {
+            var userDetail = _cIDbContext.User
+                .Where(u => u.Id == id && !u.IsDeleted)
+                .Select(user => new UserResponseModel() {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    EmailAddress = user.EmailAddress,
+                    UserType = user.UserType,
+                })
+                .FirstOrDefault() ?? throw new Exception("User not found.");
+
+            return userDetail;
+        }
+
+        public async Task<bool> LoginUserProfileUpdate(AddUserDetailsRequestModel requestModel) {
+            try {
+                var user = _cIDbContext.User.Where(x => x.Id == requestModel.UserId).FirstOrDefault();
+
+                if (user == null) throw new Exception("Not Found!");
+
+                var userDetails = _cIDbContext.UserDetails.Where(x => x.UserId == requestModel.UserId).FirstOrDefault();
+
+                if (userDetails == null) {
+                    // Add User Details
+                    UserDetail userDetail = new UserDetail() {
+                        UserId = requestModel.UserId,
+                        Availability = requestModel.Avilability,
+                        CityId = requestModel.CityId,
+                        CountryId = requestModel.CountryId,
+                        Department = requestModel.Department,
+                        EmployeeId = requestModel.EmployeeId,
+                        LinkedInUrl = requestModel.LinkdInUrl,
+                        Manager = requestModel.Manager,
+                        MyProfile = requestModel.MyProfile,
+                        MySkills = requestModel.MySkills,
+                        Surname = requestModel.Surname,
+                        Name = requestModel.Name,
+                        UserImage = requestModel.UserImage,
+                        WhyIVolunteer = requestModel.WhyIVolunteer,
+                        Status = requestModel.Status,
+                        Title = requestModel.Title,
+
+                        IsDeleted = false,
+                        CreatedDate = DateTime.Now,
+                    };
+
+                    await _cIDbContext.UserDetails.AddAsync(userDetail);
+                } else {
+                    // Update User Details
+                    userDetails.UserId = requestModel.UserId;
+                    userDetails.Availability = requestModel.Avilability;
+                    userDetails.CityId = requestModel.CityId;
+                    userDetails.CountryId = requestModel.CountryId;
+                    userDetails.Department = requestModel.Department;
+                    userDetails.EmployeeId = requestModel.EmployeeId;
+                    userDetails.LinkedInUrl = requestModel.LinkdInUrl;
+                    userDetails.Manager = requestModel.Manager;
+                    userDetails.MyProfile = requestModel.MyProfile;
+                    userDetails.MySkills = requestModel.MySkills;
+                    userDetails.Surname = requestModel.Surname;
+                    userDetails.Name = requestModel.Name;
+                    userDetails.UserImage = requestModel.UserImage;
+                    userDetails.WhyIVolunteer = requestModel.WhyIVolunteer;
+                    userDetails.Status = requestModel.Status;
+                    userDetails.Title = requestModel.Title;
+
+                    userDetails.ModifiedDate = DateTime.Now;
+
+                    _cIDbContext.UserDetails.Update(userDetails);
+                }
+
+                user.FirstName = requestModel.Name;
+                user.LastName = requestModel.Surname;
+
+                _cIDbContext.User.Update(user);
+                await _cIDbContext.SaveChangesAsync();
+                return true;
+            } catch (Exception ex) {
+                throw;
+            }
         }
     }
-
 }

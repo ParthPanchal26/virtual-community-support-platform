@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VCS.Entities.Entities {
+namespace VCS.Entities {
     public class ResponseResult {
         public object Data { get; set; }
         public ResponseStatus Result { get; set; }
